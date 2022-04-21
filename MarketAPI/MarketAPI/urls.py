@@ -21,8 +21,8 @@ from market.views import ProductCategoryListView, ProductCategoryView, ProductLi
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('__debug__/', include('debug_toolbar.urls')),
-    path('api/v1/category/', ProductCategoryListView.as_view()),
-    path('api/v1/category/<int:category_pk>/', ProductCategoryView.as_view()),
-    path('api/v1/category/<int:category_pk>/products/', ProductListView.as_view()),
-    path('api/v1/category/<int:category_pk>/products/<int:product_pk>/', ProductView.as_view()),
+    path('api/v1/categories/', ProductCategoryListView.as_view()),
+    path('api/v1/categories/<int:category_pk>/', ProductCategoryView.as_view()),
+    path('api/v1/categories/<int:category_pk>/products/', ProductListView.as_view()),
+    path('api/v1/categories/<int:category_pk>/products/<int:product_pk>/', ProductView.as_view()),
 ]
