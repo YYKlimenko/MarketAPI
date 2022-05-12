@@ -2,11 +2,6 @@ from django.contrib.auth.models import User
 from django.db import models
 
 
-class RelatedManager(models.Manager):
-    def get_queryset(self):
-        return super().get_queryset().select_related()
-
-
 class ProductCategory(models.Model):
     name = models.CharField('Наименование', max_length=64)
     parent = models.ForeignKey('self',
@@ -15,7 +10,6 @@ class ProductCategory(models.Model):
                                on_delete=models.SET_NULL,
                                verbose_name='Родительская категория',
                                related_name='children')
-    objects = RelatedManager
 
     def __str__(self):
         return self.name
