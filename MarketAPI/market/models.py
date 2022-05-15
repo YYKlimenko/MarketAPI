@@ -38,21 +38,49 @@ class Product(models.Model):
         verbose_name_plural = 'Товары'
 
 
+class OrderStatus(models.Model):
+    order = models.ForeignKey('Order',
+                              on_delete=models.CASCADE,
+                              verbose_name='Заказ',
+                              related_name='statuses')
+    title = models.CharField('Наименование статуса',
+                             max_length=3,
+                             choices=[
+                                 ('crt', 'Создано'),
+                                 ('snt', 'Отправлено'),
+                                 ('dlv', 'Доставлено'),
+                                 ('rcv', 'Получено'),
+                                 ('cnl', 'Отменено')
+                             ])
+    date = models.DateTimeField('Время назначения статуса', auto_now_add=True)
+
+    def __str__(self):
+        return f'{self.title}: {self.date}'
+
+    class Meta:
+        verbose_name = 'Статус'
+        verbose_name_plural = 'Статусы'
+
+
 class Order(models.Model):
     user = models.ForeignKey(User,
                              on_delete=models.CASCADE,
                              verbose_name='Пользователь',
-                             related_name='Заказы')
-    product = models.ManyToManyField(Product,
-                                     verbose_name='Товар',
-                                     related_name='products')
-    date_create = models.DateTimeField('Время оформления', auto_created=True)
-    date_delivery = models.DateField('Дата доставки')
-    data_received = models.DateTimeField('Время получения')
+                             related_name='orders')
+    products = models.ManyToManyField(Product,
+                                      verbose_name='Товар',
+                                      related_name='products')
+
+    def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
+        super(Order, self).save()
+        OrderStatus.objects.create(order_id=self.id, title='crt')
 
     def __str__(self):
-        return f'{self.user}: {[self.product]}: {self.date_create}'
+        return f'{self.id} - {self.user}: {[self.products]}'
 
     class Meta:
         verbose_name = 'Заказ'
         verbose_name_plural = 'Заказы'
+
+
+
