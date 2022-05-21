@@ -15,22 +15,38 @@ Including another URLconf
 """
 
 from django.contrib import admin
+from django.conf.urls.static import static
 from django.urls import path, include
 from market.views import ProductCategoryListView, ProductCategoryDetailView, ProductListView, ProductDetailView, \
-    OrderListView, OrderDetailView, OrderStatusListView
+    OrderListView, OrderDetailView, OrderStatusListView, ProductImageListView, ProductImageDetailView
+from MarketAPI.settings import DEBUG, MEDIA_ROOT, MEDIA_URL
 from rest_framework import urls
 
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('__debug__/', include('debug_toolbar.urls')),
     path('api/v1/categories/', ProductCategoryListView.as_view()),
-    path('api/v1/categories/products/', ProductCategoryListView.as_view()),
     path('api/v1/categories/<int:category_pk>/', ProductCategoryDetailView.as_view()),
     path('api/v1/categories/<int:category_pk>/products/', ProductListView.as_view()),
     path('api/v1/categories/<int:category_pk>/products/<int:product_pk>/', ProductDetailView.as_view()),
+    path('api/v1/categories/<int:category_pk>/products/<int:product_pk>/images/', ProductImageListView.as_view()),
+    path(
+        'api/v1/categories/<int:category_pk>/products/<int:product_pk>/images/<int:image_pk>/',
+        ProductImageDetailView.as_view()
+    ),
+    path('api/v1/products/', ProductListView.as_view()),
+    path('api/v1/products/<int:product_pk>/', ProductDetailView.as_view()),
+    path('api/v1/products/<int:product_pk>/images/', ProductImageListView.as_view()),
+    path('api/v1/products/<int:product_pk>/images/<int:image_pk>/', ProductImageDetailView.as_view()),
     path('api/v1/orders/', OrderListView.as_view()),
     path('api/v1/orders/<int:order_pk>/', OrderDetailView.as_view()),
     path('api/v1/orders/<int:order_pk>/statuses/', OrderStatusListView.as_view()),
     path('api/v1/auth/', include(urls))
 ]
+
+if DEBUG:
+    import debug_toolbar
+    urlpatterns += [
+        path('__debug__/', include(debug_toolbar.urls)),
+    ]
+    urlpatterns += static(MEDIA_URL, document_root=MEDIA_ROOT)

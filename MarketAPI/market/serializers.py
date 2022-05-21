@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from rest_framework.fields import SerializerMethodField
-from .models import ProductCategory, Product, Order, OrderStatus
+from .models import ProductCategory, Product, Order, OrderStatus, ProductImage
 
 
 class ProductCategoryListSerializer(serializers.ModelSerializer):
@@ -22,14 +22,35 @@ class ProductCategoryDetailSerializer(serializers.ModelSerializer):
         pass
 
 
-class ProductListSerializer(serializers.ModelSerializer):
-    category = SerializerMethodField()
+class ProductImageListSerializer(serializers.ModelSerializer):
+    image = serializers.ImageField()
 
-    def get_category(self, obj):
+    def to_internal_value(self, data):
+        values = super().to_internal_value(data)
+        values['product_id'] = self.context.get('product')
+        return values
+
+    class Meta:
+        model = ProductImage
+        fields = '__all__'
+
+
+class ProductImageDetailSerializer(serializers.ModelSerializer):
+    image = serializers.ImageField()
+
+    class Meta(ProductImageListSerializer.Meta):
+        pass
+
+
+class ProductListSerializer(serializers.ModelSerializer):
+
+    def to_representation(self, instance):
+        represent = super().to_representation(instance)
         if self.context.get('category'):
-            return self.context['category']
+            represent['category'] = self.context['category']
         else:
-            return obj.category_id
+            represent['category'] = instance.category_id
+        return represent
 
     def to_internal_value(self, data):
         values = super().to_internal_value(data)
@@ -38,7 +59,7 @@ class ProductListSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Product
-        fields = '__all__'
+        fields = ('id', 'name', 'description', 'price', 'images')
 
 
 class ProductDetailSerializer(serializers.ModelSerializer):
@@ -46,10 +67,11 @@ class ProductDetailSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
         represent = super().to_representation(instance)
         represent['category'] = ProductCategoryDetailSerializer(instance.category).data
+        represent['images'] = ProductImageListSerializer(instance.images.all(), many=True).data
         return represent
 
     class Meta(ProductListSerializer.Meta):
-        pass
+        fields = ('id', 'name', 'category', 'description', 'price')
 
 
 class OrderStatusSerializer(serializers.ModelSerializer):

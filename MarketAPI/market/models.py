@@ -38,6 +38,24 @@ class Product(models.Model):
         verbose_name_plural = 'Товары'
 
 
+class ProductImage(models.Model):
+    name = models.CharField('Название', max_length=20)
+    image = models.ImageField('Изображение товара', upload_to='images/%Y/%m/%d/')
+    product = models.ForeignKey(Product,
+                                null=True,
+                                blank=True,
+                                on_delete=models.CASCADE,
+                                verbose_name='Товар',
+                                related_name='images')
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        verbose_name = 'Изображение товара'
+        verbose_name_plural = 'Изображение товара'
+
+
 class OrderStatus(models.Model):
     order = models.ForeignKey('Order',
                               on_delete=models.CASCADE,
@@ -60,6 +78,7 @@ class OrderStatus(models.Model):
     class Meta:
         verbose_name = 'Статус'
         verbose_name_plural = 'Статусы'
+        unique_together = ('order', 'title')
 
 
 class Order(models.Model):

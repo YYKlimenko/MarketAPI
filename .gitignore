@@ -3,3 +3,4 @@ __pycache__/
 venv/
 .idea/
 MarketAPI/db.sqlite3
+media/images

@@ -1,9 +1,10 @@
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import SearchFilter, OrderingFilter
-from .models import ProductCategory, Product, Order, OrderStatus
+from .models import ProductCategory, Product, Order, OrderStatus, ProductImage
 from .serializers import ProductCategoryListSerializer, ProductCategoryDetailSerializer, ProductListSerializer, \
-    ProductDetailSerializer, OrderListSerializer, OrderDetailSerializer, OrderStatusSerializer
+    ProductDetailSerializer, OrderListSerializer, OrderDetailSerializer, OrderStatusSerializer, \
+    ProductImageListSerializer, ProductImageDetailSerializer
 from .permissions import IsAdminOrReadOnly
 
 
@@ -34,9 +35,10 @@ class ProductListView(CommonDataSet, ListCreateAPIView):
 
     def get_queryset(self):
         if self.kwargs.get('category_pk'):
-            return Product.objects.filter(category=self.kwargs['category_pk']).select_related('category')
+            return Product.objects.filter(
+                category=self.kwargs['category_pk']).select_related('category').prefetch_related('images')
         else:
-            return Product.objects.all()
+            return Product.objects.all().select_related('category').prefetch_related('images')
 
     def get_serializer_context(self):
         context = super().get_serializer_context()
@@ -47,8 +49,14 @@ class ProductListView(CommonDataSet, ListCreateAPIView):
 
 class ProductDetailView(CommonDataSet, RetrieveUpdateDestroyAPIView):
     serializer_class = ProductDetailSerializer
-    queryset = Product.objects.all().select_related('category')
     lookup_url_kwarg = 'product_pk'
+
+    def get_queryset(self):
+        if self.kwargs.get('category_pk'):
+            return Product.objects.filter(
+                category=self.kwargs['category_pk']).select_related('category').prefetch_related('images')
+        else:
+            return Product.objects.all()
 
 
 class OrderListView(CommonDataSet, ListCreateAPIView):
@@ -76,3 +84,23 @@ class OrderStatusListView(CommonDataSet, ListCreateAPIView):
         if self.kwargs.get('order_pk'):
             context['order'] = self.kwargs['order_pk']
         return context
+
+
+class ProductImageListView(CommonDataSet, ListCreateAPIView):
+    serializer_class = ProductImageListSerializer
+
+    def get_queryset(self):
+        return ProductImage.objects.filter(product_id=self.kwargs.get('product_pk'))
+
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        context['product'] = self.kwargs.get('product_pk')
+        return context
+
+
+class ProductImageDetailView(CommonDataSet, RetrieveUpdateDestroyAPIView):
+    serializer_class = ProductImageDetailSerializer
+    lookup_url_kwarg = 'image_pk'
+
+    def get_queryset(self):
+        return ProductImage.objects.filter(product_id=self.kwargs.get('product_pk'))
