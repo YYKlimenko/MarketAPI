@@ -88,7 +88,7 @@ class Order(models.Model):
                              related_name='orders')
     products = models.ManyToManyField(Product,
                                       verbose_name='Товар',
-                                      related_name='products')
+                                      related_name='orders')
 
     def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
         super(Order, self).save()

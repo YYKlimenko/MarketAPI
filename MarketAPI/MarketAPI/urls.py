@@ -21,27 +21,34 @@ from market.views import ProductCategoryListView, ProductCategoryDetailView, Pro
     OrderListView, OrderDetailView, OrderStatusListView, ProductImageListView, ProductImageDetailView
 from MarketAPI.settings import DEBUG, MEDIA_ROOT, MEDIA_URL
 from rest_framework import urls
+from rest_framework_simplejwt.views import (
+    TokenObtainPairView,
+    TokenRefreshView,
+)
 
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/v1/categories/', ProductCategoryListView.as_view()),
-    path('api/v1/categories/<int:category_pk>/', ProductCategoryDetailView.as_view()),
-    path('api/v1/categories/<int:category_pk>/products/', ProductListView.as_view()),
-    path('api/v1/categories/<int:category_pk>/products/<int:product_pk>/', ProductDetailView.as_view()),
+    path('api/v1/categories/', ProductCategoryListView.as_view(), name='categories'),
+    path('api/v1/categories/<int:category_pk>/', ProductCategoryDetailView.as_view(), name='category'),
+    path('api/v1/categories/<int:category_pk>/products/', ProductListView.as_view(), name='products'),
+    path('api/v1/categories/<int:category_pk>/products/<int:product_pk>/', ProductDetailView.as_view(), name='product'),
     path('api/v1/categories/<int:category_pk>/products/<int:product_pk>/images/', ProductImageListView.as_view()),
     path(
         'api/v1/categories/<int:category_pk>/products/<int:product_pk>/images/<int:image_pk>/',
         ProductImageDetailView.as_view()
     ),
-    path('api/v1/products/', ProductListView.as_view()),
+    path('api/v1/products/', ProductListView.as_view(), name='all_products'),
     path('api/v1/products/<int:product_pk>/', ProductDetailView.as_view()),
     path('api/v1/products/<int:product_pk>/images/', ProductImageListView.as_view()),
     path('api/v1/products/<int:product_pk>/images/<int:image_pk>/', ProductImageDetailView.as_view()),
-    path('api/v1/orders/', OrderListView.as_view()),
-    path('api/v1/orders/<int:order_pk>/', OrderDetailView.as_view()),
+    path('api/v1/orders/', OrderListView.as_view(), name='orders'),
+    path('api/v1/orders/<int:order_pk>/', OrderDetailView.as_view(), name='order'),
     path('api/v1/orders/<int:order_pk>/statuses/', OrderStatusListView.as_view()),
-    path('api/v1/auth/', include(urls))
+
+    path('api/v1/auth/', include(urls)),
+    path('api/v1/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('api/v1/token/refresh/', TokenRefreshView.as_view(), name='token_refresh')
 ]
 
 if DEBUG:
