@@ -3,7 +3,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import SearchFilter, OrderingFilter
 from .models import ProductCategory, Product, Order, OrderStatus, ProductImage
 from .serializers import ProductCategoryListSerializer, ProductCategoryDetailSerializer, ProductListSerializer, \
-    ProductDetailSerializer, OrderListSerializer, OrderDetailSerializer, OrderStatusSerializer, \
+    ProductDetailSerializer, OrderListSerializer, OrderDetailSerializer, OrderStatusListSerializer, \
     ProductImageListSerializer, ProductImageDetailSerializer
 from .permissions import IsAdminOrReadOnly
 
@@ -71,7 +71,7 @@ class OrderDetailView(CommonDataSet, RetrieveUpdateDestroyAPIView):
 
 
 class OrderStatusListView(CommonDataSet, ListCreateAPIView):
-    serializer_class = OrderStatusSerializer
+    serializer_class = OrderStatusListSerializer
 
     def get_queryset(self):
         if self.kwargs.get('order_pk'):

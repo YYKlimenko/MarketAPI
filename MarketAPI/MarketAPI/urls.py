@@ -44,7 +44,7 @@ urlpatterns = [
     path('api/v1/products/<int:product_pk>/images/<int:image_pk>/', ProductImageDetailView.as_view()),
     path('api/v1/orders/', OrderListView.as_view(), name='orders'),
     path('api/v1/orders/<int:order_pk>/', OrderDetailView.as_view(), name='order'),
-    path('api/v1/orders/<int:order_pk>/statuses/', OrderStatusListView.as_view()),
+    path('api/v1/orders/<int:order_pk>/statuses/', OrderStatusListView.as_view(), name='statuses'),
 
     path('api/v1/auth/', include(urls)),
     path('api/v1/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),

@@ -1,9 +1,9 @@
 from django.urls import reverse
 from django.contrib.auth.models import User
 from rest_framework.test import APITestCase
-from market.models import ProductCategory, Product, Order
+from market.models import ProductCategory, Product, Order, OrderStatus
 from market.serializers import ProductCategoryListSerializer, ProductCategoryDetailSerializer, ProductListSerializer, \
-    ProductDetailSerializer, OrderListSerializer, OrderDetailSerializer
+    ProductDetailSerializer, OrderListSerializer, OrderDetailSerializer, OrderStatusListSerializer
 
 
 class ProductAPITestCase(APITestCase):
@@ -123,3 +123,27 @@ class ProductAPITestCase(APITestCase):
             response.data
         )
         self.assertEqual(response.status_code, 200)
+
+    def test_order_status_get_list(self):
+        response = self.client.get(reverse('statuses', kwargs={'order_pk': 1}))
+        self.assertEqual(
+            OrderStatusListSerializer(OrderStatus.objects.filter(order_id=1), many=True).data,
+            response.data
+        )
+        self.assertEqual(response.status_code, 200)
+
+    def test_order_status_post(self):
+        self.client.force_authenticate(user=self.user)
+        response = self.client.post(
+            reverse('statuses', kwargs={'order_pk': 1}),
+            data={'title': 'snt'}
+        )
+        self.assertEqual(
+            OrderStatus.objects.get(pk=2).title,
+            'snt'
+        )
+        self.assertEqual(
+            OrderStatus.objects.get(pk=2).order,
+            self.order_1
+        )
+        self.assertEqual(response.status_code, 201)

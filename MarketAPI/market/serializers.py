@@ -74,7 +74,7 @@ class ProductDetailSerializer(serializers.ModelSerializer):
         fields = ('id', 'name', 'category', 'description', 'price')
 
 
-class OrderStatusSerializer(serializers.ModelSerializer):
+class OrderStatusListSerializer(serializers.ModelSerializer):
     order = SerializerMethodField()
 
     def get_order(self, obj):
@@ -97,7 +97,7 @@ class OrderListSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
         represent = super().to_representation(instance)
-        represent['status'] = OrderStatusSerializer(instance.statuses.latest('date')).data
+        represent['status'] = OrderStatusListSerializer(instance.statuses.latest('date')).data
         represent['status'].pop('order')
         return represent
 
@@ -111,7 +111,7 @@ class OrderDetailSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
         represent = super().to_representation(instance)
         represent['products'] = ProductListSerializer(instance.products, many=True).data
-        represent['statuses'] = OrderStatusSerializer(instance.statuses, many=True).data
+        represent['statuses'] = OrderStatusListSerializer(instance.statuses, many=True).data
         return represent
 
     class Meta:
