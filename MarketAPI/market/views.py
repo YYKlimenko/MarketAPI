@@ -6,11 +6,12 @@ from .serializers import ProductCategoryListSerializer, ProductCategoryDetailSer
     ProductDetailSerializer, OrderListSerializer, OrderDetailSerializer, OrderStatusListSerializer, \
     ProductImageListSerializer, ProductImageDetailSerializer
 from .permissions import IsAdminOrReadOnly
+from .paginations import Paginator
 
 
 class CommonDataSet:
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
-    permission_classes = [IsAdminOrReadOnly]
+    permission_classes = (IsAdminOrReadOnly, )
 
 
 class ProductCategoryListView(CommonDataSet, ListCreateAPIView):
@@ -19,6 +20,7 @@ class ProductCategoryListView(CommonDataSet, ListCreateAPIView):
     filter_fields = ['parent']
     search_fields = ['name', 'parent']
     ordering_fields = ['name', 'parent']
+    pagination_class = Paginator
 
 
 class ProductCategoryDetailView(CommonDataSet, RetrieveUpdateDestroyAPIView):
@@ -32,6 +34,7 @@ class ProductListView(CommonDataSet, ListCreateAPIView):
     filter_fields = ['category']
     search_fields = ['name', 'category__name', 'description']
     ordering_fields = ['name', 'category', 'price', 'description']
+    pagination_class = Paginator
 
     def get_queryset(self):
         if self.kwargs.get('category_pk'):

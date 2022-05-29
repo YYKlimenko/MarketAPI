@@ -17,6 +17,7 @@ class ProductCategory(models.Model):
     class Meta:
         verbose_name = 'Категория продуктов'
         verbose_name_plural = 'Категории продуктов'
+        ordering = ('id',)
 
 
 class Product(models.Model):
@@ -36,6 +37,7 @@ class Product(models.Model):
     class Meta:
         verbose_name = 'Товар'
         verbose_name_plural = 'Товары'
+        ordering = ('id',)
 
 
 class ProductImage(models.Model):

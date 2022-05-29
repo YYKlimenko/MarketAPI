@@ -21,10 +21,8 @@ from market.views import ProductCategoryListView, ProductCategoryDetailView, Pro
     OrderListView, OrderDetailView, OrderStatusListView, ProductImageListView, ProductImageDetailView
 from MarketAPI.settings import DEBUG, MEDIA_ROOT, MEDIA_URL
 from rest_framework import urls
-from rest_framework_simplejwt.views import (
-    TokenObtainPairView,
-    TokenRefreshView,
-)
+from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView, TokenVerifyView
+from market.yasg import urlpatterns as doc_urls
 
 
 urlpatterns = [
@@ -47,9 +45,12 @@ urlpatterns = [
     path('api/v1/orders/<int:order_pk>/statuses/', OrderStatusListView.as_view(), name='statuses'),
 
     path('api/v1/auth/', include(urls)),
-    path('api/v1/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
-    path('api/v1/token/refresh/', TokenRefreshView.as_view(), name='token_refresh')
+    path('api/v1/token/', TokenObtainPairView.as_view(), name='token'),
+    path('api/v1/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    path('api/v1/token/verify/', TokenVerifyView.as_view(), name='token_verify'),
 ]
+
+urlpatterns += doc_urls
 
 if DEBUG:
     import debug_toolbar
