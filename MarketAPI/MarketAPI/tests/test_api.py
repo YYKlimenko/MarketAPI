@@ -139,11 +139,11 @@ class ProductAPITestCase(APITestCase):
             data={'title': 'snt'}
         )
         self.assertEqual(
-            OrderStatus.objects.get(pk=2).title,
+            OrderStatus.objects.get(pk=3).title,
             'snt'
         )
         self.assertEqual(
-            OrderStatus.objects.get(pk=2).order,
+            OrderStatus.objects.get(pk=3).order,
             self.order_1
         )
         self.assertEqual(response.status_code, 201)

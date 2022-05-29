@@ -5,3 +5,4 @@ venv/
 MarketAPI/db.sqlite3
 media/images/
 MarketAPI/.env
+MarketAPI/market/migrations/

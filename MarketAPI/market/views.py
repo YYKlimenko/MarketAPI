@@ -20,7 +20,7 @@ class ProductCategoryListView(CommonDataSet, ListCreateAPIView):
     filter_fields = ['parent']
     search_fields = ['name', 'parent']
     ordering_fields = ['name', 'parent']
-    pagination_class = Paginator
+    # pagination_class = Paginator
 
 
 class ProductCategoryDetailView(CommonDataSet, RetrieveUpdateDestroyAPIView):
@@ -34,7 +34,7 @@ class ProductListView(CommonDataSet, ListCreateAPIView):
     filter_fields = ['category']
     search_fields = ['name', 'category__name', 'description']
     ordering_fields = ['name', 'category', 'price', 'description']
-    pagination_class = Paginator
+    # pagination_class = Paginator
 
     def get_queryset(self):
         if self.kwargs.get('category_pk'):
