@@ -2,17 +2,24 @@ from django.urls import reverse
 from django.contrib.auth.models import User
 from rest_framework.test import APITestCase
 from market.models import ProductCategory, Product, Order, OrderStatus
-from market.serializers import ProductCategoryListSerializer, ProductCategoryDetailSerializer, ProductListSerializer, \
-    ProductDetailSerializer, OrderListSerializer, OrderDetailSerializer, OrderStatusListSerializer
+from market.serializers import (
+    ProductCategoryListSerializer,
+    ProductCategoryDetailSerializer, ProductListSerializer,
+    ProductDetailSerializer, OrderListSerializer,
+    OrderDetailSerializer, OrderStatusListSerializer
+)
 
 
 class ProductAPITestCase(APITestCase):
 
     @classmethod
     def setUpTestData(cls):
-        cls.user = User.objects.create_superuser(username='admin', email='admin@admin.ru', password='admin')
+        cls.user = User.objects.create_superuser(username='admin',
+                                                 email='admin@admin.ru',
+                                                 password='admin')
         cls.category_1 = ProductCategory.objects.create(name='Техника')
-        cls.category_2 = ProductCategory.objects.create(name='Телевизоры', parent_id=1)
+        cls.category_2 = ProductCategory.objects.create(name='Телевизоры',
+                                                        parent_id=1)
         cls.product_1 = Product.objects.create(
             name='Xiaomi P1',
             category_id=2,
@@ -27,14 +34,16 @@ class ProductAPITestCase(APITestCase):
     def test_category_get_list(self):
         response = self.client.get(reverse('categories'))
         self.assertEqual(
-            ProductCategoryListSerializer([self.category_1, self.category_2], many=True).data,
+            ProductCategoryListSerializer([self.category_1, self.category_2],
+                                          many=True).data,
             response.data
         )
         self.assertEqual(response.status_code, 200)
 
     def test_category_post(self):
         self.client.force_authenticate(user=self.user)
-        self.client.post(reverse('categories'), data={'name': 'смартфоны', 'parent': 2})
+        self.client.post(reverse('categories'), data={'name': 'смартфоны',
+                                                      'parent': 2})
         category_3 = ProductCategory.objects.get(pk=3)
         self.assertEqual(
             (category_3.name, category_3.parent_id),
@@ -42,7 +51,8 @@ class ProductAPITestCase(APITestCase):
         )
 
     def test_category_get_detail(self):
-        response = self.client.get(reverse('category', kwargs={'category_pk': 2}))
+        response = self.client.get(reverse('category',
+                                           kwargs={'category_pk': 2}))
         self.assertEqual(
             ProductCategoryDetailSerializer(self.category_2).data,
             response.data
@@ -52,7 +62,8 @@ class ProductAPITestCase(APITestCase):
     """Блок тестирования Продуктов"""
 
     def test_product_get_list(self):
-        response = self.client.get(reverse('products', kwargs={'category_pk': 2}))
+        response = self.client.get(reverse('products',
+                                           kwargs={'category_pk': 2}))
         queryset = Product.objects.filter(category=2)
         self.assertEqual(
             ProductListSerializer(queryset, many=True).data,
@@ -64,7 +75,10 @@ class ProductAPITestCase(APITestCase):
         self.client.force_authenticate(user=self.user)
         response = self.client.post(
             reverse('products', kwargs={'category_pk': 2}),
-            data={'name': 'Samsung TV', 'category': 2, 'description': 'Норм', 'price': 12000.12}
+            data={'name': 'Samsung TV',
+                  'category': 2,
+                  'description': 'Норм',
+                  'price': 12000.12}
         )
         product_2 = Product.objects.get(pk=2)
         self.assertEqual(
@@ -74,7 +88,9 @@ class ProductAPITestCase(APITestCase):
         self.assertEqual(response.status_code, 201)
 
     def test_product_get_detail(self):
-        response = self.client.get(reverse('product', kwargs={'category_pk': 2, 'product_pk': 1}))
+        response = self.client.get(reverse('product',
+                                           kwargs={'category_pk': 2,
+                                                   'product_pk': 1}))
         instance = Product.objects.get(pk=1)
         self.assertEqual(
             ProductDetailSerializer(instance).data,
@@ -127,7 +143,8 @@ class ProductAPITestCase(APITestCase):
     def test_order_status_get_list(self):
         response = self.client.get(reverse('statuses', kwargs={'order_pk': 1}))
         self.assertEqual(
-            OrderStatusListSerializer(OrderStatus.objects.filter(order_id=1), many=True).data,
+            OrderStatusListSerializer(OrderStatus.objects.filter(order_id=1),
+                                      many=True).data,
             response.data
         )
         self.assertEqual(response.status_code, 200)

@@ -42,7 +42,8 @@ class Product(models.Model):
 
 class ProductImage(models.Model):
     name = models.CharField('Название', max_length=20)
-    image = models.ImageField('Изображение товара', upload_to='images/%Y/%m/%d/')
+    image = models.ImageField('Изображение товара',
+                              upload_to='images/%Y/%m/%d/')
     product = models.ForeignKey(Product,
                                 null=True,
                                 blank=True,
@@ -92,7 +93,11 @@ class Order(models.Model):
                                       verbose_name='Товар',
                                       related_name='orders')
 
-    def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
+    def save(self,
+             force_insert=False,
+             force_update=False,
+             using=None,
+             update_fields=None):
         super(Order, self).save()
         OrderStatus.objects.create(order_id=self.id, title='crt')
 
@@ -102,6 +107,3 @@ class Order(models.Model):
     class Meta:
         verbose_name = 'Заказ'
         verbose_name_plural = 'Заказы'
-
-
-

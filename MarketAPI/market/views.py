@@ -6,7 +6,6 @@ from .serializers import ProductCategoryListSerializer, ProductCategoryDetailSer
     ProductDetailSerializer, OrderListSerializer, OrderDetailSerializer, OrderStatusListSerializer, \
     ProductImageListSerializer, ProductImageDetailSerializer
 from .permissions import IsAdminOrReadOnly
-from .paginations import Paginator
 
 
 class CommonDataSet:
@@ -20,7 +19,6 @@ class ProductCategoryListView(CommonDataSet, ListCreateAPIView):
     filter_fields = ['parent']
     search_fields = ['name', 'parent']
     ordering_fields = ['name', 'parent']
-    # pagination_class = Paginator
 
 
 class ProductCategoryDetailView(CommonDataSet, RetrieveUpdateDestroyAPIView):
@@ -34,19 +32,14 @@ class ProductListView(CommonDataSet, ListCreateAPIView):
     filter_fields = ['category']
     search_fields = ['name', 'category__name', 'description']
     ordering_fields = ['name', 'category', 'price', 'description']
-    # pagination_class = Paginator
 
     def get_queryset(self):
-        if self.kwargs.get('category_pk'):
-            return Product.objects.filter(
-                category=self.kwargs['category_pk']).select_related('category').prefetch_related('images')
-        else:
-            return Product.objects.all().select_related('category').prefetch_related('images')
+        return Product.objects.filter(
+            category=self.kwargs['category_pk']).select_related('category').prefetch_related('images')
 
     def get_serializer_context(self):
         context = super().get_serializer_context()
-        if self.kwargs.get('category_pk'):
-            context['category'] = self.kwargs['category_pk']
+        context['category'] = self.kwargs['category_pk']
         return context
 
 

@@ -25,6 +25,11 @@ class ProductCategoryDetailSerializer(serializers.ModelSerializer):
 class ProductImageListSerializer(serializers.ModelSerializer):
     image = serializers.ImageField()
 
+    def to_representation(self, instance):
+        represent = super().to_representation(instance)
+        represent['product'] = self.context.get('product')
+        return represent
+
     def to_internal_value(self, data):
         values = super().to_internal_value(data)
         values['product_id'] = self.context.get('product')
@@ -32,7 +37,7 @@ class ProductImageListSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ProductImage
-        fields = '__all__'
+        fields = ('id', 'name', 'image')
 
 
 class ProductImageDetailSerializer(serializers.ModelSerializer):
@@ -47,9 +52,10 @@ class ProductListSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
         represent = super().to_representation(instance)
         if self.context.get('category'):
-            represent['category'] = self.context['category']
+            represent['category_id'] = self.context['category']
         else:
-            represent['category'] = instance.category_id
+            represent['category_id'] = instance.category_id
+        represent['category_id'] = instance.category_id
         return represent
 
     def to_internal_value(self, data):

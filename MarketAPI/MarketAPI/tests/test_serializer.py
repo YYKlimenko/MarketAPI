@@ -1,20 +1,24 @@
 from collections import OrderedDict
-
-from django.urls import reverse
 from django.contrib.auth.models import User
 from rest_framework.test import APITestCase
 from market.models import ProductCategory, Product, Order
-from market.serializers import ProductCategoryListSerializer, ProductCategoryDetailSerializer, ProductListSerializer, \
-    ProductDetailSerializer, OrderListSerializer, OrderDetailSerializer
+from market.serializers import (
+    ProductCategoryListSerializer, ProductCategoryDetailSerializer,
+    ProductListSerializer, ProductDetailSerializer,
+    OrderListSerializer, OrderDetailSerializer
+)
 
 
 class ProductAPITestCase(APITestCase):
 
     @classmethod
     def setUpTestData(cls):
-        cls.user = User.objects.create_superuser(username='admin', email='admin@admin.ru', password='admin')
+        cls.user = User.objects.create_superuser(username='admin',
+                                                 email='admin@admin.ru',
+                                                 password='admin')
         cls.category_1 = ProductCategory.objects.create(name='Техника')
-        cls.category_2 = ProductCategory.objects.create(name='Телевизоры', parent_id=4)
+        cls.category_2 = ProductCategory.objects.create(name='Телевизоры',
+                                                        parent_id=4)
         cls.product_1 = Product.objects.create(
             name='Xiaomi P1',
             category_id=4,
@@ -32,7 +36,8 @@ class ProductAPITestCase(APITestCase):
 
     def test_category_list_serializer(self):
         self.assertEqual(
-            ProductCategoryListSerializer([self.category_1, self.category_2], many=True).data,
+            ProductCategoryListSerializer([self.category_1, self.category_2],
+                                          many=True).data,
             [OrderedDict([('id', 4), ('name', 'Техника'), ('parent', None)]),
              OrderedDict([('id', 5), ('name', 'Телевизоры'), ('parent', 4)])]
         )
@@ -45,11 +50,20 @@ class ProductAPITestCase(APITestCase):
 
     def test_product_list_serializer(self):
         self.assertEqual(
-            ProductListSerializer([self.product_1, self.product_2], many=True).data,
-            [OrderedDict([('id', 3), ('name', 'Xiaomi P1'), ('description', 'Топ за свои деньги'),
-                          ('price', '22200.220'), ('images', []), ('category', 4)]),
-             OrderedDict([('id', 4), ('name', 'Xiaomi P2'), ('description', 'Топ за свои деньги'),
-                          ('price', '22200.220'), ('images', []), ('category', 5)])]
+            ProductListSerializer([self.product_1, self.product_2],
+                                  many=True).data,
+            [OrderedDict([('id', 3),
+                          ('name', 'Xiaomi P1'),
+                          ('description', 'Топ за свои деньги'),
+                          ('price', '22200.220'),
+                          ('images', []),
+                          ('category_id', 4)]),
+             OrderedDict([('id', 4),
+                          ('name', 'Xiaomi P2'),
+                          ('description', 'Топ за свои деньги'),
+                          ('price', '22200.220'),
+                          ('images', []),
+                          ('category_id', 5)])]
         )
 
     def test_product_detail_serializer(self):
@@ -85,7 +99,7 @@ class ProductAPITestCase(APITestCase):
                         ('description', 'Топ за свои деньги'),
                         ('price', '22200.220'),
                         ('images', []),
-                        ('category', 4)
+                        ('category_id', 4)
                     ]
                 )]
              }

@@ -89,12 +89,12 @@ WSGI_APPLICATION = 'MarketAPI.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': os.getenv('DB_NAME'),
-        'USER': os.getenv('DB_LOGIN'),
-        'PASSWORD': os.getenv('DB_PASSWORD'),
-        'HOST': os.getenv('DB_HOST'),
-        'PORT': os.getenv('DB_PORT'),
+            'ENGINE': 'django.db.backends.postgresql_psycopg2',
+            'NAME': 'postgres',
+            'USER': 'postgres',
+            'PASSWORD': '123456',
+            'HOST': 'db',
+            'PORT': 5432,
     }
 }
 
@@ -129,8 +129,8 @@ USE_I18N = True
 
 USE_TZ = True
 
+# IP для Debug Toolbar
 
-#IP для Debug Toolbar
 INTERNAL_IPS = [
     '127.0.0.1',
 ]
@@ -142,7 +142,7 @@ INTERNAL_IPS = [
 STATIC_URL = 'static/'
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-MEDIA_URL ='/media/'
+MEDIA_URL = '/media/'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
