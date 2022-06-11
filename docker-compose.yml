@@ -9,8 +9,9 @@ services:
       - 5432:5432
   backend:
     build: .
-    command: bash -c "python marketapi/manage.py migrate --noinput &&
-              python marketapi/manage.py runserver 0.0.0.0:8000"
+    command: bash -c "python MarketAPI/manage.py makemigrations &&
+              python MarketAPI/manage.py migrate --noinput  &&
+              python MarketAPI/manage.py runserver 0.0.0.0:8000"
 
     volumes:
       - .:/backend/marketapi/

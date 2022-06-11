@@ -3,11 +3,12 @@ FROM python:3.10
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 
-WORKDIR backend/
 
-COPY requirements.txt backend/marketapi/
-RUN pip install -r backend/marketapi/requirements.txt
-RUN backend/marketapi/marketapi/manage.py migrate
+WORKDIR /usr/src/backend
+COPY ./requirements.txt /usr/src/backend/
+RUN pip install -r /usr/src/backend/requirements.txt
 
-COPY . backend/marketapi
+COPY . /usr/src/backend
+
+
 
