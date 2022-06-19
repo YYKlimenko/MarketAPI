@@ -2,6 +2,6 @@
 __pycache__/
 venv/
 .idea/
-media/images/
+MarketAPI/media/images/
 MarketAPI/.env
 MarketAPI/market/migrations/
