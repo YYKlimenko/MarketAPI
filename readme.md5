@@ -6,9 +6,9 @@ MarketAPI:
 
 Установка:
 Из рабочего каталога выполните команду:
-    `docker-compose up`
+    >docker-compose up`
 Создайте суперпользователя для администрирования:
-    `docker-compose run backend python MarketAPI/manage.py createsuperuser --noinput --email (mail)`
+    >docker-compose run backend python MarketAPI/manage.py createsuperuser --noinput --email (mail)`
 
 В проекте реализовано: CRUD-операции, аутентификации по сессии, JWT-аутентификация, сериализация данных,
 разрешения (permissions), Swagger-документация, unit-тесты, оптимизация sql-запросов, контейнеризация (Docker)
